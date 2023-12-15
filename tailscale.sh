@@ -44,6 +44,7 @@ mkdir -p tailscale/usr/{bin,sbin,lib/{systemd/system,extension-release.d}}
 # pull things into the right place in the target dir structure
 cp -rf $tar_dir/tailscale tailscale/usr/bin/tailscale
 cp -rf $tar_dir/tailscaled tailscale/usr/sbin/tailscaled
+cp -rf $tar_dir/systemd/tailscaled.service tailscale/usr/lib/systemd/system/tailscaled.service
 
 # write a systemd extension-release file
 echo -e "ID=steamos\nVERSION_ID=${VERSION_ID}" >> tailscale/usr/lib/extension-release.d/extension-release.tailscale
@@ -53,9 +54,6 @@ mkdir -p /var/lib/extensions
 rm -rf /var/lib/extensions/tailscale
 cp -rf tailscale /var/lib/extensions/
 
-# copy the systemd files into place
-cp -rf $tar_dir/systemd/tailscaled.service /etc/systemd/system
-
 # copy in the defaults file if it doesn't already exist
 if ! test -f /etc/default/tailscaled; then
   cp -rf $tar_dir/systemd/tailscaled.defaults /etc/default/tailscaled
@@ -64,12 +62,6 @@ fi
 # return to our original directory (silently) and clean up
 popd > /dev/null
 rm -rf "${dir}"
-
-# copy in our overrides file if it doesn't already exist
-if ! test -f /etc/systemd/system/tailscaled.service.d/override.conf; then
-  mkdir -p /etc/systemd/system/tailscaled.service.d
-  cp -rf override.conf /etc/systemd/system/tailscaled.service.d/override.conf
-fi
 
 echo "done."
 
