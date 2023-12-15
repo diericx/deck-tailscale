@@ -46,6 +46,8 @@ cp -rf $tar_dir/tailscale tailscale/usr/bin/tailscale
 cp -rf $tar_dir/tailscaled tailscale/usr/sbin/tailscaled
 cp -rf $tar_dir/systemd/tailscaled.service tailscale/usr/lib/systemd/system/tailscaled.service
 
+sed -i 's/--port.*//g' tailscale/usr/lib/systemd/system/tailscaled.service
+
 # write a systemd extension-release file
 echo -e "ID=steamos\nVERSION_ID=${VERSION_ID}" >> tailscale/usr/lib/extension-release.d/extension-release.tailscale
 
